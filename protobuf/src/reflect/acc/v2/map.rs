@@ -14,7 +14,7 @@ use crate::reflect::runtime_types::RuntimeTypeTrait;
 use crate::reflect::ProtobufValue;
 use crate::reflect::RuntimeType;
 
-pub(crate) trait MapFieldAccessor: Send + Sync + 'static {
+pub trait MapFieldAccessor: Send + Sync + 'static {
     fn get_reflect<'a>(&self, m: &'a dyn MessageDyn) -> ReflectMapRef<'a>;
     fn mut_reflect<'a>(&self, m: &'a mut dyn MessageDyn) -> ReflectMapMut<'a>;
     fn _element_type(&self) -> (RuntimeType, RuntimeType);
@@ -30,7 +30,7 @@ impl<'a> fmt::Debug for MapFieldAccessorHolder {
     }
 }
 
-struct MapFieldAccessorImpl<M, T>
+pub struct MapFieldAccessorImpl<M, T>
 where
     M: MessageFull,
 {
@@ -111,7 +111,7 @@ where
 /// Make accessor for map field, new version
 // This is only used in generated code.
 // Rust compiler allows it, and we want to avoid exposing traits in public API.
-#[allow(private_bounds)]
+// #[allow(private_bounds)]
 pub fn make_map_simpler_accessor_new<M, T>(
     name: &'static str,
     get_field: for<'a> fn(&'a M) -> &'a T,
